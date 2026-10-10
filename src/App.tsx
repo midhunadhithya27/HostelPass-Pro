@@ -47,46 +47,24 @@ export default function App() {
   }, []);
 
   const handleSelectRole = (role: UserRole) => {
+    // If a person is currently logged in to any role, do NOT allow them to switch roles!
+    if (currentUser || hostelStore.getCurrentUser()) {
+      return;
+    }
     hostelStore.setCurrentRole(role);
     setCurrentRole(role);
-    // Switch to corresponding user for that role
-    if (role === 'student') {
-      const studs = hostelStore.getStudents();
-      hostelStore.setCurrentUser(studs[0] || null);
-    } else if (role === 'parent') {
-      const parents = hostelStore.getParents();
-      hostelStore.setCurrentUser(parents[0] || null);
-    } else if (role === 'warden') {
-      const wardens = hostelStore.getWardens();
-      hostelStore.setCurrentUser(wardens[0] || null);
-    } else if (role === 'watchman') {
-      const watchmen = hostelStore.getWatchmen();
-      hostelStore.setCurrentUser(watchmen[0] || null);
-    }
     soundService.playNotificationPing();
   };
 
   const handleLogout = () => {
-    hostelStore.setCurrentUser(null);
+    hostelStore.logout();
     setCurrentUser(null);
+    syncState();
     soundService.playNotificationPing();
   };
 
   const handleOtpSuccess = () => {
-    // When OTP completes successfully, reload user based on role
-    if (currentRole === 'student') {
-      const students = hostelStore.getStudents();
-      hostelStore.setCurrentUser(students[0]);
-    } else if (currentRole === 'parent') {
-      const parents = hostelStore.getParents();
-      hostelStore.setCurrentUser(parents[0]);
-    } else if (currentRole === 'warden') {
-      const wardens = hostelStore.getWardens();
-      hostelStore.setCurrentUser(wardens[0]);
-    } else if (currentRole === 'watchman') {
-      const watchmen = hostelStore.getWatchmen();
-      hostelStore.setCurrentUser(watchmen[0]);
-    }
+    // The authenticated user profile is securely bound by verifyOtp in the store
     syncState();
   };
 
@@ -153,6 +131,19 @@ export default function App() {
             <span>Warden Queue Cap: 100/100</span>
             <span>•</span>
             <span>Live Gate Sentinel</span>
+            <span>•</span>
+            <button
+              onClick={() => {
+                if (window.confirm('Remove all existing data for students, parents, wardens, watchmen, and leave passes? This will start completely fresh.')) {
+                  hostelStore.clearAllData();
+                  syncState();
+                }
+              }}
+              className="text-slate-500 hover:text-rose-400 underline transition-colors cursor-pointer"
+              title="Purge all records"
+            >
+              Clear All Data
+            </button>
           </div>
         </div>
       </footer>

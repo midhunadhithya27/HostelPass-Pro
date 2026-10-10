@@ -26,23 +26,15 @@ export const WatchmanAuth: React.FC<WatchmanAuthProps> = ({ onSuccess, onSwitchR
   const [successMsg, setSuccessMsg] = useState<string>('');
 
   // Watchman Login States:
-  // Prompt: "The login for watchman should ask for his phone number and their name and it should have a otp verification process."
-  const [loginName, setLoginName] = useState('Murugan K.');
-  const [loginPhone, setLoginPhone] = useState('+91 98840 55667');
+  const [loginName, setLoginName] = useState('');
+  const [loginPhone, setLoginPhone] = useState('');
 
   // Watchman Register States:
-  // Prompt: "The registration should ask the following details from the watchman, his name , phone number, college working proof id/or something else as a photo or a file."
   const [regName, setRegName] = useState('');
   const [regPhone, setRegPhone] = useState('+91 ');
-  const [regProofId, setRegProofId] = useState('AU-SEC-2024-9182 (Anna University Security Division)');
+  const [regProofId, setRegProofId] = useState('');
   const [regGatePost, setRegGatePost] = useState('Main Gate 1 - CEG Campus');
   const [proofFileName, setProofFileName] = useState('');
-
-  const handleDemoFill = () => {
-    setLoginName('Murugan K.');
-    setLoginPhone('+91 98840 55667');
-    setError('');
-  };
 
   const handleProofFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -72,9 +64,9 @@ export const WatchmanAuth: React.FC<WatchmanAuthProps> = ({ onSuccess, onSwitchR
       return;
     }
 
-    // Send OTP to Watchman's Phone
+    // Send OTP to Watchman's Phone with session binding
     const msg = `HostelPass Gate Sentinel: Security Check-In OTP for Officer ${watchman.name}.`;
-    hostelStore.sendOtp('watchman', watchman.phone, msg);
+    hostelStore.sendOtp('watchman', watchman.phone, msg, undefined, watchman);
 
     setSuccessMsg(`OTP sent to Security Officer phone (${watchman.phone}). Please verify to open Gate Terminal.`);
   };
@@ -138,24 +130,6 @@ export const WatchmanAuth: React.FC<WatchmanAuthProps> = ({ onSuccess, onSwitchR
           </button>
         </div>
       </div>
-
-      {/* Demo Credentials Quick-Chip */}
-      {mode === 'login' && (
-        <div className="mt-4 p-3 bg-emerald-950/40 border border-emerald-500/30 rounded-xl flex items-center justify-between text-xs">
-          <div className="text-slate-300">
-            <span className="font-semibold text-emerald-300">Demo Officer: </span>
-            <span className="font-mono text-slate-200">Murugan K.</span> / <span className="font-mono text-slate-200">+91 98840 55667</span>
-          </div>
-          <button
-            type="button"
-            onClick={handleDemoFill}
-            className="px-2.5 py-1 bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-200 rounded-md font-medium text-xs flex items-center gap-1 transition-colors"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-            1-Click Fill
-          </button>
-        </div>
-      )}
 
       {error && (
         <div className="mt-4 p-3.5 bg-rose-500/10 border border-rose-500/30 rounded-xl flex items-center gap-2.5 text-rose-300 text-xs">

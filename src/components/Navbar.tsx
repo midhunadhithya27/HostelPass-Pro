@@ -1,5 +1,4 @@
 import React from 'react';
-import { hostelStore } from '../services/store';
 import { UserRole } from '../types';
 import { 
   Building2, 
@@ -8,11 +7,9 @@ import {
   ShieldCheck, 
   ShieldAlert, 
   Bell, 
-  RotateCcw, 
   LogOut,
-  Sparkles
+  Lock
 } from 'lucide-react';
-import { soundService } from '../services/soundService';
 
 interface NavbarProps {
   currentRole: UserRole;
@@ -31,13 +28,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   onLogout,
   currentUser,
 }) => {
-  const handleResetData = () => {
-    if (confirm('Reset demo data to initial sample states?')) {
-      hostelStore.resetToSampleData();
-      soundService.playNotificationPing();
-    }
-  };
-
   return (
     <header className="sticky top-0 z-40 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -58,56 +48,80 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
           </div>
 
-          {/* Role Navigation Switcher (Student, Parent, Warden, Watchman) */}
-          <nav className="flex items-center gap-1 p-1 bg-slate-950/80 border border-slate-800 rounded-2xl">
-            <button
-              onClick={() => onSelectRole('student')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
-                currentRole === 'student'
-                  ? 'bg-indigo-600 text-white shadow-md'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
-              }`}
-            >
-              <GraduationCap className="w-3.5 h-3.5" />
-              <span className="hidden md:inline">Student</span>
-            </button>
+          {/* Role Navigation Area */}
+          {currentUser ? (
+            /* LOCKED ROLE BADGE (Role switching strictly disabled while logged in) */
+            <div className="flex items-center gap-2.5 px-3.5 py-1.5 bg-slate-950 border border-slate-800 rounded-2xl shadow-inner">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-xs font-bold text-white capitalize flex items-center gap-1.5">
+                  {currentRole === 'student' && <GraduationCap className="w-4 h-4 text-indigo-400" />}
+                  {currentRole === 'parent' && <Heart className="w-4 h-4 text-amber-400" />}
+                  {currentRole === 'warden' && <ShieldCheck className="w-4 h-4 text-violet-400" />}
+                  {currentRole === 'watchman' && <ShieldAlert className="w-4 h-4 text-emerald-400" />}
+                  {currentRole} Session:
+                </span>
+                <span className="text-xs font-semibold text-slate-200 max-w-[140px] sm:max-w-xs truncate">
+                  {currentUser.name}
+                </span>
+              </div>
+              <span className="hidden md:inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-800/80 text-[10px] font-mono text-amber-400 border border-slate-700">
+                <Lock className="w-3 h-3" />
+                Role Locked
+              </span>
+            </div>
+          ) : (
+            /* Unauthenticated Portal Selector */
+            <nav className="flex items-center gap-1 p-1 bg-slate-950/80 border border-slate-800 rounded-2xl">
+              <button
+                onClick={() => onSelectRole('student')}
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
+                  currentRole === 'student'
+                    ? 'bg-indigo-600 text-white shadow-md'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                }`}
+              >
+                <GraduationCap className="w-3.5 h-3.5" />
+                <span className="hidden md:inline">Student</span>
+              </button>
 
-            <button
-              onClick={() => onSelectRole('parent')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
-                currentRole === 'parent'
-                  ? 'bg-amber-600 text-white shadow-md'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
-              }`}
-            >
-              <Heart className="w-3.5 h-3.5" />
-              <span className="hidden md:inline">Parent</span>
-            </button>
+              <button
+                onClick={() => onSelectRole('parent')}
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
+                  currentRole === 'parent'
+                    ? 'bg-amber-600 text-white shadow-md'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                }`}
+              >
+                <Heart className="w-3.5 h-3.5" />
+                <span className="hidden md:inline">Parent</span>
+              </button>
 
-            <button
-              onClick={() => onSelectRole('warden')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
-                currentRole === 'warden'
-                  ? 'bg-violet-600 text-white shadow-md'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
-              }`}
-            >
-              <ShieldCheck className="w-3.5 h-3.5" />
-              <span className="hidden md:inline">Warden</span>
-            </button>
+              <button
+                onClick={() => onSelectRole('warden')}
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
+                  currentRole === 'warden'
+                    ? 'bg-violet-600 text-white shadow-md'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                }`}
+              >
+                <ShieldCheck className="w-3.5 h-3.5" />
+                <span className="hidden md:inline">Warden</span>
+              </button>
 
-            <button
-              onClick={() => onSelectRole('watchman')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
-                currentRole === 'watchman'
-                  ? 'bg-emerald-600 text-white shadow-md'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
-              }`}
-            >
-              <ShieldAlert className="w-3.5 h-3.5" />
-              <span className="hidden md:inline">Watchman</span>
-            </button>
-          </nav>
+              <button
+                onClick={() => onSelectRole('watchman')}
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
+                  currentRole === 'watchman'
+                    ? 'bg-emerald-600 text-white shadow-md'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                }`}
+              >
+                <ShieldAlert className="w-3.5 h-3.5" />
+                <span className="hidden md:inline">Watchman</span>
+              </button>
+            </nav>
+          )}
 
           {/* Right Utilities */}
           <div className="flex items-center gap-2">
@@ -125,27 +139,16 @@ export const Navbar: React.FC<NavbarProps> = ({
               )}
             </button>
 
-            {/* Reset Demo Data Button */}
-            <button
-              onClick={handleResetData}
-              className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 text-xs text-slate-400 hover:text-slate-200 bg-slate-800/50 hover:bg-slate-800 rounded-xl border border-slate-700/60 transition-colors"
-              title="Reset Sample State"
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-              <span>Reset Data</span>
-            </button>
-
-            {/* Current User Quick Info / Logout */}
+            {/* Logout button when user is logged in */}
             {currentUser && (
-              <div className="flex items-center gap-2 pl-2 border-l border-slate-800">
-                <button
-                  onClick={onLogout}
-                  className="p-2 text-slate-400 hover:text-rose-400 bg-slate-800/50 hover:bg-slate-800 rounded-xl transition-colors"
-                  title="Switch / Logout"
-                >
-                  <LogOut className="w-4 h-4" />
-                </button>
-              </div>
+              <button
+                onClick={onLogout}
+                className="px-3 py-1.5 text-xs font-semibold text-rose-300 hover:text-rose-200 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 rounded-xl transition-all flex items-center gap-1.5"
+                title="Log out of this account"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Log Out</span>
+              </button>
             )}
           </div>
         </div>

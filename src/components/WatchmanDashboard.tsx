@@ -501,6 +501,9 @@ export const WatchmanDashboard: React.FC<WatchmanDashboardProps> = ({ watchman }
                   autoPlay 
                   playsInline 
                   muted 
+                  onLoadedMetadata={(e) => {
+                    e.currentTarget.play().catch(err => console.warn('Video auto-play warning:', err));
+                  }}
                   className="w-full h-full object-cover" 
                 />
                 

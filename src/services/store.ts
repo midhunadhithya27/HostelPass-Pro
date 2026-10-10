@@ -13,284 +13,27 @@ import {
 import { soundService } from './soundService';
 
 const STORAGE_KEYS = {
-  STUDENTS: 'hostelpass_students_v2',
-  PARENTS: 'hostelpass_parents_v2',
-  WARDENS: 'hostelpass_wardens_v2',
-  WATCHMEN: 'hostelpass_watchmen_v2',
-  REQUESTS: 'hostelpass_requests_v2',
-  GATE_LOGS: 'hostelpass_gatelogs_v2',
-  NOTIFICATIONS: 'hostelpass_notifications_v2',
-  CURRENT_USER: 'hostelpass_current_user_v2',
-  CURRENT_ROLE: 'hostelpass_current_role_v2',
-  ACTIVE_OTP: 'hostelpass_active_otp_v2',
+  PURGE_FLAG: 'hostelpass_v4_purged_flag',
+  STUDENTS: 'hostelpass_v4_students',
+  PARENTS: 'hostelpass_v4_parents',
+  WARDENS: 'hostelpass_v4_wardens',
+  WATCHMEN: 'hostelpass_v4_watchmen',
+  REQUESTS: 'hostelpass_v4_requests',
+  GATE_LOGS: 'hostelpass_v4_gatelogs',
+  NOTIFICATIONS: 'hostelpass_v4_notifications',
+  CURRENT_USER: 'hostelpass_v4_current_user',
+  CURRENT_ROLE: 'hostelpass_v4_current_role',
+  ACTIVE_OTP: 'hostelpass_v4_active_otp',
 };
 
-// Initial realistic seed data
-const INITIAL_STUDENTS: StudentProfile[] = [
-  {
-    id: 'stud-1',
-    name: 'Karthik Subramanian',
-    rollNumber: '2023105084',
-    email: 'karthik.s@ceg.annauniv.edu',
-    collegeName: 'College of Engineering, Guindy (CEG), Anna University',
-    password: 'password123',
-    parentName: 'Senthil Nathan S',
-    parentPhone: '+91 98401 23456',
-    parentEmail: 'senthil.parent@gmail.com',
-    profilePic: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=400&q=80',
-    dob: '2004-06-15',
-    year: '3rd Year',
-    course: 'B.E. Computer Science and Engineering',
-    gender: 'Male',
-    hostelBlock: 'Thamarai Block (Men)',
-    roomNumber: 'B-304',
-    studentPhone: '+91 91234 56789',
-    createdAt: new Date(Date.now() - 30 * 86400000).toISOString(),
-    campusStatus: 'IN_CAMPUS',
-  },
-  {
-    id: 'stud-2',
-    name: 'Ananya Ramesh',
-    rollNumber: '2023108012',
-    email: 'ananya.r@ceg.annauniv.edu',
-    collegeName: 'College of Engineering, Guindy (CEG), Anna University',
-    password: 'password123',
-    parentName: 'Ramesh Krishnan',
-    parentPhone: '+91 94441 55667',
-    parentEmail: 'ramesh.parent@gmail.com',
-    profilePic: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80',
-    dob: '2005-02-20',
-    year: '2nd Year',
-    course: 'B.Tech Information Technology',
-    gender: 'Female',
-    hostelBlock: 'Kurunji Block (Women)',
-    roomNumber: 'K-210',
-    studentPhone: '+91 98840 12345',
-    createdAt: new Date(Date.now() - 25 * 86400000).toISOString(),
-    campusStatus: 'OUT_ON_OUTING',
-  }
-];
-
-const INITIAL_PARENTS: ParentProfile[] = [
-  {
-    id: 'parent-1',
-    name: 'Senthil Nathan S',
-    email: 'senthil.parent@gmail.com',
-    phone: '+91 98401 23456',
-    relation: 'Father',
-    password: 'password123',
-    linkedStudentRoll: '2023105084',
-    linkedStudentName: 'Karthik Subramanian',
-    createdAt: new Date(Date.now() - 30 * 86400000).toISOString(),
-  },
-  {
-    id: 'parent-2',
-    name: 'Ramesh Krishnan',
-    email: 'ramesh.parent@gmail.com',
-    phone: '+91 94441 55667',
-    relation: 'Father',
-    password: 'password123',
-    linkedStudentRoll: '2023108012',
-    linkedStudentName: 'Ananya Ramesh',
-    createdAt: new Date(Date.now() - 25 * 86400000).toISOString(),
-  }
-];
-
-const INITIAL_WARDENS: WardenProfile[] = [
-  {
-    id: 'warden-1',
-    name: 'Dr. R. Balasubramanian',
-    email: 'balasubramanian.warden@ceg.annauniv.edu',
-    phone: '+91 94440 11223',
-    password: 'password123',
-    assignedBlocks: ['Thamarai Block (Men)', 'Kaveri Block (Men)'],
-    activeRequestCount: 14,
-    maxCapacity: 100,
-    shift: 'Morning (06:00 - 14:00)',
-    createdAt: new Date(Date.now() - 60 * 86400000).toISOString(),
-  },
-  {
-    id: 'warden-2',
-    name: 'Prof. M. Vijayalakshmi',
-    email: 'vijayalakshmi.warden@ceg.annauniv.edu',
-    phone: '+91 94440 99887',
-    password: 'password123',
-    assignedBlocks: ['Kurunji Block (Women)', 'Mullai Block (Women)', 'Vaigai Block (Men)'],
-    activeRequestCount: 9,
-    maxCapacity: 100,
-    shift: 'General Shift',
-    createdAt: new Date(Date.now() - 60 * 86400000).toISOString(),
-  }
-];
-
-const INITIAL_WATCHMEN: WatchmanProfile[] = [
-  {
-    id: 'watchman-1',
-    name: 'Murugan K. (Chief Security Officer)',
-    phone: '+91 98840 55667',
-    collegeProofId: 'AU-SEC-2018-0442 (Anna University Security Division)',
-    gatePost: 'Main Gate 1 - CEG Campus',
-    createdAt: new Date(Date.now() - 90 * 86400000).toISOString(),
-  },
-  {
-    id: 'watchman-2',
-    name: 'S. Rajendran',
-    phone: '+91 97720 33441',
-    collegeProofId: 'AU-SEC-2020-0891 (Hostel Zone Security)',
-    gatePost: 'South Campus Gate 3',
-    createdAt: new Date(Date.now() - 45 * 86400000).toISOString(),
-  }
-];
-
-// Seeded Leave Requests illustrating each step in the pipeline
-const INITIAL_REQUESTS: LeaveRequest[] = [
-  {
-    id: 'req-1',
-    passNumber: 'HP-2026-8942',
-    studentId: 'stud-1',
-    studentRollNumber: '2023105084',
-    studentName: 'Karthik Subramanian',
-    studentEmail: 'karthik.s@ceg.annauniv.edu',
-    studentPhone: '+91 91234 56789',
-    profilePic: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=400&q=80',
-    collegeName: 'College of Engineering, Guindy (CEG), Anna University',
-    hostelBlock: 'Thamarai Block (Men)',
-    roomNumber: 'B-304',
-    course: 'B.E. Computer Science and Engineering',
-    year: '3rd Year',
-    parentName: 'Senthil Nathan S',
-    parentEmail: 'senthil.parent@gmail.com',
-    parentPhone: '+91 98401 23456',
-    requestType: 'Outing',
-    leavingDateTime: new Date(Date.now() + 2 * 3600000).toISOString(),
-    returnDateTime: new Date(Date.now() + 8 * 3600000).toISOString(),
-    reason: 'Purchase technical books and project hardware components from Ritchie Street & Phoenix Mall',
-    destination: 'Ritchie Street & Mount Road, Chennai',
-    emergencyContact: '+91 98401 23456 (Father)',
-    status: 'PENDING_PARENT',
-    createdAt: new Date(Date.now() - 15 * 60000).toISOString(),
-  },
-  {
-    id: 'req-2',
-    passNumber: 'HP-2026-8109',
-    studentId: 'stud-1',
-    studentRollNumber: '2023105084',
-    studentName: 'Karthik Subramanian',
-    studentEmail: 'karthik.s@ceg.annauniv.edu',
-    studentPhone: '+91 91234 56789',
-    profilePic: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=400&q=80',
-    collegeName: 'College of Engineering, Guindy (CEG), Anna University',
-    hostelBlock: 'Thamarai Block (Men)',
-    roomNumber: 'B-304',
-    course: 'B.E. Computer Science and Engineering',
-    year: '3rd Year',
-    parentName: 'Senthil Nathan S',
-    parentEmail: 'senthil.parent@gmail.com',
-    parentPhone: '+91 98401 23456',
-    requestType: 'Home Leave',
-    leavingDateTime: new Date(Date.now() + 24 * 3600000).toISOString(),
-    returnDateTime: new Date(Date.now() + 72 * 3600000).toISOString(),
-    reason: 'Attending family religious ceremony at native town in Madurai',
-    destination: '14, South Veli Street, Madurai - 625001',
-    emergencyContact: '+91 98401 23456 (Father)',
-    status: 'PENDING_WARDEN',
-    createdAt: new Date(Date.now() - 90 * 60000).toISOString(),
-    parentApprovedAt: new Date(Date.now() - 40 * 60000).toISOString(),
-    parentRemarks: 'Approved by Father. Train ticket booked for Madurai Pandian Express.',
-    assignedWardenId: 'warden-1',
-    assignedWardenName: 'Dr. R. Balasubramanian',
-  },
-  {
-    id: 'req-3',
-    passNumber: 'HP-2026-7734',
-    studentId: 'stud-2',
-    studentRollNumber: '2023108012',
-    studentName: 'Ananya Ramesh',
-    studentEmail: 'ananya.r@ceg.annauniv.edu',
-    studentPhone: '+91 98840 12345',
-    profilePic: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=80',
-    collegeName: 'College of Engineering, Guindy (CEG), Anna University',
-    hostelBlock: 'Kurunji Block (Women)',
-    roomNumber: 'K-210',
-    course: 'B.Tech Information Technology',
-    year: '2nd Year',
-    parentName: 'Ramesh Krishnan',
-    parentEmail: 'ramesh.parent@gmail.com',
-    parentPhone: '+91 94441 55667',
-    requestType: 'Outing',
-    leavingDateTime: new Date(Date.now() - 3 * 3600000).toISOString(),
-    returnDateTime: new Date(Date.now() + 3 * 3600000).toISOString(),
-    reason: 'Visit medical center for eye checkup with elder sibling',
-    destination: 'Sankara Nethralaya, Nungambakkam, Chennai',
-    emergencyContact: '+91 94441 55667 (Father)',
-    status: 'STUDENT_EXITED_CAMPUS',
-    createdAt: new Date(Date.now() - 5 * 3600000).toISOString(),
-    parentApprovedAt: new Date(Date.now() - 4 * 3600000).toISOString(),
-    parentRemarks: 'Approved. Sibling accompanying her.',
-    assignedWardenId: 'warden-2',
-    assignedWardenName: 'Prof. M. Vijayalakshmi',
-    wardenApprovedAt: new Date(Date.now() - 3.5 * 3600000).toISOString(),
-    wardenRemarks: 'Outpass granted. Strict deadline to return before 8:30 PM.',
-    exitScanTime: new Date(Date.now() - 3 * 3600000).toISOString(),
-    exitWatchmanName: 'Murugan K. (Chief Security Officer)',
-    exitGate: 'Main Gate 1 - CEG Campus',
-    qrToken: 'HP-TOKEN-7734-2023108012-VALID',
-  }
-];
-
-const INITIAL_GATE_LOGS: GateLog[] = [
-  {
-    id: 'log-1',
-    requestId: 'req-3',
-    passNumber: 'HP-2026-7734',
-    studentRollNumber: '2023108012',
-    studentName: 'Ananya Ramesh',
-    hostelBlock: 'Kurunji Block (Women)',
-    roomNumber: 'K-210',
-    scanType: 'OUT',
-    timestamp: new Date(Date.now() - 3 * 3600000).toISOString(),
-    watchmanName: 'Murugan K. (Chief Security Officer)',
-    gatePost: 'Main Gate 1 - CEG Campus',
-    remarks: 'Identity and QR pass verified at exit gate',
-  }
-];
-
-const INITIAL_NOTIFICATIONS: AppNotification[] = [
-  {
-    id: 'notif-1',
-    recipientRole: 'parent',
-    recipientIdentifier: 'senthil.parent@gmail.com',
-    title: '🔔 Action Required: Outing Approval Request',
-    message: 'Your son Karthik Subramanian has requested an Outing pass to Ritchie Street & Mount Road. Please review and approve.',
-    timestamp: new Date(Date.now() - 15 * 60000).toISOString(),
-    read: false,
-    type: 'emergency',
-    requestId: 'req-1',
-    urgentBypass: true,
-  },
-  {
-    id: 'notif-2',
-    recipientRole: 'warden',
-    recipientIdentifier: 'warden-1',
-    title: '✅ Parent Approved Request Routed to Queue',
-    message: 'Parent Senthil Nathan approved Home Leave for Karthik Subramanian (2023105084). Request #HP-2026-8109 assigned to your queue.',
-    timestamp: new Date(Date.now() - 40 * 60000).toISOString(),
-    read: false,
-    type: 'info',
-    requestId: 'req-2',
-  },
-  {
-    id: 'notif-3',
-    recipientRole: 'student',
-    recipientIdentifier: '2023108012',
-    title: '🎉 Outpass QR Approved & Activated!',
-    message: 'Warden Prof. M. Vijayalakshmi approved your Outing request. Digital Gatepass #HP-2026-7734 is ready for scanning.',
-    timestamp: new Date(Date.now() - 3.5 * 3600000).toISOString(),
-    read: true,
-    type: 'success',
-    requestId: 'req-3',
-  }
-];
+// 100% clean initial state: zero pre-existing students, parents, wardens, or requests
+const INITIAL_STUDENTS: StudentProfile[] = [];
+const INITIAL_PARENTS: ParentProfile[] = [];
+const INITIAL_WARDENS: WardenProfile[] = [];
+const INITIAL_WATCHMEN: WatchmanProfile[] = [];
+const INITIAL_REQUESTS: LeaveRequest[] = [];
+const INITIAL_GATE_LOGS: GateLog[] = [];
+const INITIAL_NOTIFICATIONS: AppNotification[] = [];
 
 // Helper to broadcast state changes across tabs
 const broadcastChannel = typeof window !== 'undefined' && 'BroadcastChannel' in window 
@@ -302,6 +45,23 @@ class HostelStore {
 
   constructor() {
     if (typeof window !== 'undefined') {
+      // Purge all legacy and existing data about students, parents, and wardens
+      try {
+        if (!localStorage.getItem(STORAGE_KEYS.PURGE_FLAG)) {
+          const keysToRemove: string[] = [];
+          for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith('hostelpass_')) {
+              keysToRemove.push(key);
+            }
+          }
+          keysToRemove.forEach(k => localStorage.removeItem(k));
+          localStorage.setItem(STORAGE_KEYS.PURGE_FLAG, 'true');
+        }
+      } catch (e) {
+        console.warn('LocalStorage initial purge error:', e);
+      }
+
       window.addEventListener('storage', (e) => {
         if (e.key && Object.values(STORAGE_KEYS).includes(e.key)) {
           this.notifyListeners();
@@ -392,21 +152,17 @@ class HostelStore {
   }
 
   setCurrentRole(role: UserRole) {
+    // If a person is logged into any role, do NOT allow them to switch roles!
+    if (this.getCurrentUser()) {
+      return;
+    }
     this.set(STORAGE_KEYS.CURRENT_ROLE, role);
     this.notifyListeners();
   }
 
   getCurrentUser(): StudentProfile | ParentProfile | WardenProfile | WatchmanProfile | null {
-    const role = this.getCurrentRole();
-    const stored = this.get<any>(STORAGE_KEYS.CURRENT_USER, null);
-    if (stored) return stored;
-
-    // Fallback to default demo user for that role
-    if (role === 'student') return this.getStudents()[0] || null;
-    if (role === 'parent') return this.getParents()[0] || null;
-    if (role === 'warden') return this.getWardens()[0] || null;
-    if (role === 'watchman') return this.getWatchmen()[0] || null;
-    return null;
+    // Return exclusively the actual authenticated session user - zero fake/mock user fallbacks
+    return this.get<any>(STORAGE_KEYS.CURRENT_USER, null);
   }
 
   setCurrentUser(user: any) {
@@ -620,7 +376,7 @@ class HostelStore {
   // --- OTP GENERATION & VERIFICATION DISPATCH ---
 
   // Dispatches OTP simulation
-  sendOtp(targetRole: UserRole, targetPhone: string, previewMessage: string, secondaryPhone?: string): OtpSession {
+  sendOtp(targetRole: UserRole, targetPhone: string, previewMessage: string, secondaryPhone?: string, pendingUser?: any): OtpSession {
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     const secondaryCode = secondaryPhone ? Math.floor(100000 + Math.random() * 900000).toString() : undefined;
 
@@ -632,6 +388,7 @@ class HostelStore {
       secondaryPhone,
       secondaryCode,
       messagePreview: previewMessage,
+      pendingUser,
     };
 
     this.setActiveOtp(otpSession);
@@ -654,7 +411,14 @@ class HostelStore {
       }
     }
 
+    // Authenticate and lock into session
+    if (active.pendingUser) {
+      this.set(STORAGE_KEYS.CURRENT_USER, active.pendingUser);
+      this.set(STORAGE_KEYS.CURRENT_ROLE, active.targetRole);
+    }
+
     this.setActiveOtp(null);
+    this.notifyListeners();
     return true;
   }
 
@@ -1163,16 +927,27 @@ class HostelStore {
     this.notifyListeners();
   }
 
-  // Reset demo data to pristine initial state
+  logout() {
+    this.set(STORAGE_KEYS.CURRENT_USER, null);
+    this.set(STORAGE_KEYS.ACTIVE_OTP, null);
+    this.notifyListeners('ping');
+  }
+
+  // Reset and purge all records in the application to completely clean zero-data state
   resetToSampleData() {
-    this.set(STORAGE_KEYS.STUDENTS, INITIAL_STUDENTS);
-    this.set(STORAGE_KEYS.PARENTS, INITIAL_PARENTS);
-    this.set(STORAGE_KEYS.WARDENS, INITIAL_WARDENS);
-    this.set(STORAGE_KEYS.WATCHMEN, INITIAL_WATCHMEN);
-    this.set(STORAGE_KEYS.REQUESTS, INITIAL_REQUESTS);
-    this.set(STORAGE_KEYS.GATE_LOGS, INITIAL_GATE_LOGS);
-    this.set(STORAGE_KEYS.NOTIFICATIONS, INITIAL_NOTIFICATIONS);
-    this.set(STORAGE_KEYS.CURRENT_USER, INITIAL_STUDENTS[0]);
+    this.clearAllData();
+  }
+
+  clearAllData() {
+    this.set(STORAGE_KEYS.STUDENTS, []);
+    this.set(STORAGE_KEYS.PARENTS, []);
+    this.set(STORAGE_KEYS.WARDENS, []);
+    this.set(STORAGE_KEYS.WATCHMEN, []);
+    this.set(STORAGE_KEYS.REQUESTS, []);
+    this.set(STORAGE_KEYS.GATE_LOGS, []);
+    this.set(STORAGE_KEYS.NOTIFICATIONS, []);
+    this.set(STORAGE_KEYS.CURRENT_USER, null);
+    this.set(STORAGE_KEYS.ACTIVE_OTP, null);
     this.set(STORAGE_KEYS.CURRENT_ROLE, 'student');
     this.notifyListeners('ping');
   }

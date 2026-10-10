@@ -172,4 +172,6 @@ export interface OtpSession {
   secondaryPhone?: string;
   secondaryCode?: string;
   messagePreview: string;
+  pendingUser?: any;
 }
+

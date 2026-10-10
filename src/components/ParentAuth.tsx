@@ -26,31 +26,19 @@ export const ParentAuth: React.FC<ParentAuthProps> = ({ onSuccess, onSwitchRole 
   const [successMsg, setSuccessMsg] = useState<string>('');
 
   // Parent Login States:
-  // Prompt: "parent's name, parent's email id, relation to student, password, student's phone number, parents phone number, otp verification for both the phone numbers"
-  const [loginName, setLoginName] = useState('Senthil Nathan S');
-  const [loginEmail, setLoginEmail] = useState('senthil.parent@gmail.com');
+  const [loginName, setLoginName] = useState('');
+  const [loginEmail, setLoginEmail] = useState('');
   const [loginRelation, setLoginRelation] = useState<'Father' | 'Mother' | 'Guardian'>('Father');
-  const [loginPassword, setLoginPassword] = useState('password123');
-  const [loginStudentPhone, setLoginStudentPhone] = useState('+91 91234 56789');
-  const [loginParentPhone, setLoginParentPhone] = useState('+91 98401 23456');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [loginStudentPhone, setLoginStudentPhone] = useState('');
+  const [loginParentPhone, setLoginParentPhone] = useState('');
 
   // Parent Register States:
-  // Prompt: "parent's name, email, password, phone number, (except password everything should match with the respective student) allow only one registration either for their mother or father"
   const [regName, setRegName] = useState('');
   const [regEmail, setRegEmail] = useState('');
   const [regPassword, setRegPassword] = useState('');
   const [regPhone, setRegPhone] = useState('+91 ');
   const [regRelation, setRegRelation] = useState<'Father' | 'Mother' | 'Guardian'>('Father');
-
-  const handleDemoFill = () => {
-    setLoginName('Senthil Nathan S');
-    setLoginEmail('senthil.parent@gmail.com');
-    setLoginRelation('Father');
-    setLoginPassword('password123');
-    setLoginStudentPhone('+91 91234 56789');
-    setLoginParentPhone('+91 98401 23456');
-    setError('');
-  };
 
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -98,9 +86,9 @@ export const ParentAuth: React.FC<ParentAuthProps> = ({ onSuccess, onSwitchRole 
       return;
     }
 
-    // Trigger Dual OTP dispatch
+    // Trigger Dual OTP dispatch with parent session binding
     const msg = `HostelPass Dual Security: Parent login requested for ${parent.name}. Both Parent and Student OTP dispatched.`;
-    hostelStore.sendOtp('parent', parent.phone, msg, student.studentPhone);
+    hostelStore.sendOtp('parent', parent.phone, msg, student.studentPhone, parent);
 
     setSuccessMsg(`Dual OTP sent: Code 1 to Parent (${parent.phone}) and Code 2 to Student (${student.studentPhone}).`);
   };
@@ -165,24 +153,6 @@ export const ParentAuth: React.FC<ParentAuthProps> = ({ onSuccess, onSwitchRole 
           </button>
         </div>
       </div>
-
-      {/* Demo Credentials Quick-Chip */}
-      {mode === 'login' && (
-        <div className="mt-4 p-3 bg-amber-950/40 border border-amber-500/30 rounded-xl flex items-center justify-between text-xs">
-          <div className="text-slate-300">
-            <span className="font-semibold text-amber-300">Demo Parent: </span>
-            <span className="font-mono text-slate-200">senthil.parent@gmail.com</span> (Father of Karthik)
-          </div>
-          <button
-            type="button"
-            onClick={handleDemoFill}
-            className="px-2.5 py-1 bg-amber-600/30 hover:bg-amber-600/50 text-amber-200 rounded-md font-medium text-xs flex items-center gap-1 transition-colors"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            1-Click Fill
-          </button>
-        </div>
-      )}
 
       {error && (
         <div className="mt-4 p-3.5 bg-rose-500/10 border border-rose-500/30 rounded-xl flex items-center gap-2.5 text-rose-300 text-xs">

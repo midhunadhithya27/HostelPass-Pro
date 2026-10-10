@@ -45,9 +45,9 @@ export const StudentAuth: React.FC<StudentAuthProps> = ({ onSuccess, onSwitchRol
   const [successMsg, setSuccessMsg] = useState<string>('');
 
   // Login Form States
-  const [loginRoll, setLoginRoll] = useState('2023105084');
-  const [loginPassword, setLoginPassword] = useState('password123');
-  const [loginParentPhone, setLoginParentPhone] = useState('+91 98401 23456');
+  const [loginRoll, setLoginRoll] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [loginParentPhone, setLoginParentPhone] = useState('');
 
   // Registration Form States
   const [name, setName] = useState('');
@@ -84,16 +84,33 @@ export const StudentAuth: React.FC<StudentAuthProps> = ({ onSuccess, onSwitchRol
 
   // Open camera for live student photo capture
   const openCamera = async () => {
+    setError('');
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 640 } },
-        audio: false
-      });
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error('Camera access not supported by this browser environment');
+      }
+      let stream: MediaStream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 640 } },
+          audio: false
+        });
+      } catch (firstErr) {
+        console.warn('Camera facingMode user failed, falling back to basic video:', firstErr);
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: false
+        });
+      }
+
       cameraStreamRef.current = stream;
       setIsCameraOpen(true);
       setTimeout(() => {
         if (cameraVideoRef.current) {
           cameraVideoRef.current.srcObject = stream;
+          cameraVideoRef.current.onloadedmetadata = () => {
+            cameraVideoRef.current?.play().catch(() => {});
+          };
           cameraVideoRef.current.play().catch(() => {});
         }
       }, 100);
@@ -158,9 +175,9 @@ export const StudentAuth: React.FC<StudentAuthProps> = ({ onSuccess, onSwitchRol
       return;
     }
 
-    // Dispatch OTP to parent's SMS
+    // Dispatch OTP to parent's SMS with student session binding
     const msg = `HostelPass OTP: Your child ${student.name} (${student.rollNumber}) is attempting to log in. Verification code sent to your registered mobile.`;
-    hostelStore.sendOtp('student', student.parentPhone, msg);
+    hostelStore.sendOtp('student', student.parentPhone, msg, undefined, student);
 
     // Provide pending OTP prompt
     setSuccessMsg(`OTP sent to parent's mobile (${student.parentPhone}). Please verify.`);
@@ -204,14 +221,6 @@ export const StudentAuth: React.FC<StudentAuthProps> = ({ onSuccess, onSwitchRol
     }
   };
 
-  // Quick Demo Autofill for testing
-  const handleDemoFill = () => {
-    setLoginRoll('2023105084');
-    setLoginPassword('password123');
-    setLoginParentPhone('+91 98401 23456');
-    setError('');
-  };
-
   return (
     <div className="w-full max-w-xl mx-auto p-6 bg-slate-900/90 border border-slate-700/80 rounded-3xl shadow-2xl backdrop-blur-xl">
       {/* Header */}
@@ -246,24 +255,6 @@ export const StudentAuth: React.FC<StudentAuthProps> = ({ onSuccess, onSwitchRol
           </button>
         </div>
       </div>
-
-      {/* Demo Credentials Quick-Chip */}
-      {mode === 'login' && (
-        <div className="mt-4 p-3 bg-indigo-950/40 border border-indigo-500/30 rounded-xl flex items-center justify-between text-xs">
-          <div className="text-slate-300">
-            <span className="font-semibold text-indigo-300">Demo Account: </span>
-            <span className="font-mono text-slate-200">2023105084</span> / <span className="font-mono text-slate-200">+91 98401 23456</span>
-          </div>
-          <button
-            type="button"
-            onClick={handleDemoFill}
-            className="px-2.5 py-1 bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-200 rounded-md font-medium text-xs flex items-center gap-1 transition-colors"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-            1-Click Fill
-          </button>
-        </div>
-      )}
 
       {error && (
         <div className="mt-4 p-3.5 bg-rose-500/10 border border-rose-500/30 rounded-xl flex items-center gap-2.5 text-rose-300 text-xs">

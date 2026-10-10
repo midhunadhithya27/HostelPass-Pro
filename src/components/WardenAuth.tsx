@@ -37,11 +37,10 @@ export const WardenAuth: React.FC<WardenAuthProps> = ({ onSuccess, onSwitchRole 
   const [successMsg, setSuccessMsg] = useState<string>('');
 
   // Warden Login States:
-  // Prompt: "warden's name, email id and password, phone number, otp verification sent to the warden number"
-  const [loginName, setLoginName] = useState('Dr. R. Balasubramanian');
-  const [loginEmail, setLoginEmail] = useState('balasubramanian.warden@ceg.annauniv.edu');
-  const [loginPassword, setLoginPassword] = useState('password123');
-  const [loginPhone, setLoginPhone] = useState('+91 94440 11223');
+  const [loginName, setLoginName] = useState('');
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [loginPhone, setLoginPhone] = useState('');
 
   // Warden Register States
   const [regName, setRegName] = useState('');
@@ -49,14 +48,6 @@ export const WardenAuth: React.FC<WardenAuthProps> = ({ onSuccess, onSwitchRole 
   const [regPhone, setRegPhone] = useState('+91 ');
   const [regPassword, setRegPassword] = useState('');
   const [selectedBlocks, setSelectedBlocks] = useState<HostelBlock[]>(['Thamarai Block (Men)', 'Kaveri Block (Men)']);
-
-  const handleDemoFill = () => {
-    setLoginName('Dr. R. Balasubramanian');
-    setLoginEmail('balasubramanian.warden@ceg.annauniv.edu');
-    setLoginPassword('password123');
-    setLoginPhone('+91 94440 11223');
-    setError('');
-  };
 
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -86,9 +77,9 @@ export const WardenAuth: React.FC<WardenAuthProps> = ({ onSuccess, onSwitchRole 
       return;
     }
 
-    // Dispatch OTP to Warden
+    // Dispatch OTP to Warden with session binding
     const msg = `HostelPass Warden Gateway: Authorization OTP for ${warden.name} (${warden.email}).`;
-    hostelStore.sendOtp('warden', warden.phone, msg);
+    hostelStore.sendOtp('warden', warden.phone, msg, undefined, warden);
 
     setSuccessMsg(`OTP sent to Warden's official mobile (${warden.phone}). Please verify to enter.`);
   };
@@ -163,24 +154,6 @@ export const WardenAuth: React.FC<WardenAuthProps> = ({ onSuccess, onSwitchRole 
           </button>
         </div>
       </div>
-
-      {/* Demo Credentials Quick-Chip */}
-      {mode === 'login' && (
-        <div className="mt-4 p-3 bg-violet-950/40 border border-violet-500/30 rounded-xl flex items-center justify-between text-xs">
-          <div className="text-slate-300">
-            <span className="font-semibold text-violet-300">Demo Warden: </span>
-            <span className="font-mono text-slate-200">balasubramanian.warden@ceg.annauniv.edu</span>
-          </div>
-          <button
-            type="button"
-            onClick={handleDemoFill}
-            className="px-2.5 py-1 bg-violet-600/30 hover:bg-violet-600/50 text-violet-200 rounded-md font-medium text-xs flex items-center gap-1 transition-colors"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-violet-400" />
-            1-Click Fill
-          </button>
-        </div>
-      )}
 
       {error && (
         <div className="mt-4 p-3.5 bg-rose-500/10 border border-rose-500/30 rounded-xl flex items-center gap-2.5 text-rose-300 text-xs">
