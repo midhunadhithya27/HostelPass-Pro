@@ -41,7 +41,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <div className="flex items-center gap-2">
                 <span className="text-base font-extrabold text-white tracking-tight">HostelPass Pro</span>
                 <span className="hidden sm:inline-block px-2 py-0.2 text-[10px] font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 rounded-full">
-                  CEG Anna University
+                  PSG iTech
                 </span>
               </div>
               <p className="text-[10px] text-slate-400 hidden sm:block">Digital Outing & Gatepass Approval System</p>

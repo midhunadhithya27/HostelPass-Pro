@@ -124,7 +124,7 @@ export default function App() {
       {/* Footer */}
       <footer className="py-6 border-t border-slate-900 bg-slate-950/80 text-center text-xs text-slate-500">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p>© 2026 College of Engineering, Guindy (CEG) • Anna University Hostel Administration</p>
+          <p>© 2026 PSG INSTITUTE OF TECHNOLOGY AND APPLIED RESEARCH • Hostel Administration</p>
           <div className="flex items-center gap-4 text-[11px] text-slate-400">
             <span>Parent Authorization Protocol: Active</span>
             <span>•</span>

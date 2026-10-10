@@ -22,13 +22,10 @@ interface WardenAuthProps {
 }
 
 const ALL_BLOCKS: HostelBlock[] = [
-  'Thamarai Block (Men)',
-  'Kaveri Block (Men)',
-  'Vaigai Block (Men)',
-  'Kurunji Block (Women)',
-  'Mullai Block (Women)',
-  'Malligai Block (Women)',
-  'PG & International Block'
+  'Boys hostel-1',
+  'Boys hostel-2',
+  'Boys hostel (seniors)-3',
+  'Girl hostel'
 ];
 
 export const WardenAuth: React.FC<WardenAuthProps> = ({ onSuccess, onSwitchRole }) => {
@@ -47,7 +44,7 @@ export const WardenAuth: React.FC<WardenAuthProps> = ({ onSuccess, onSwitchRole 
   const [regEmail, setRegEmail] = useState('');
   const [regPhone, setRegPhone] = useState('+91 ');
   const [regPassword, setRegPassword] = useState('');
-  const [selectedBlocks, setSelectedBlocks] = useState<HostelBlock[]>(['Thamarai Block (Men)', 'Kaveri Block (Men)']);
+  const [selectedBlocks, setSelectedBlocks] = useState<HostelBlock[]>(['Boys hostel-1', 'Boys hostel-2']);
 
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();

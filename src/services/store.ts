@@ -324,7 +324,7 @@ class HostelStore {
       email: normalizedEmail,
       phone: data.phone.trim(),
       password: data.password || 'password123',
-      assignedBlocks: data.assignedBlocks || ['Thamarai Block (Men)', 'Kurunji Block (Women)'],
+      assignedBlocks: data.assignedBlocks || ['Boys hostel-1', 'Girl hostel'],
       activeRequestCount: 0,
       maxCapacity: 100,
       shift: 'General Shift',

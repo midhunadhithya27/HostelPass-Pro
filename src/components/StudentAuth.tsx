@@ -28,13 +28,10 @@ interface StudentAuthProps {
 }
 
 const HOSTEL_BLOCKS: HostelBlock[] = [
-  'Thamarai Block (Men)',
-  'Kaveri Block (Men)',
-  'Vaigai Block (Men)',
-  'Kurunji Block (Women)',
-  'Mullai Block (Women)',
-  'Malligai Block (Women)',
-  'PG & International Block'
+  'Boys hostel-1',
+  'Boys hostel-2',
+  'Boys hostel (seniors)-3',
+  'Girl hostel'
 ];
 
 const STUDY_YEARS: StudyYear[] = ['1st Year', '2nd Year', '3rd Year', '4th Year', 'PG / Research'];
@@ -53,7 +50,7 @@ export const StudentAuth: React.FC<StudentAuthProps> = ({ onSuccess, onSwitchRol
   const [name, setName] = useState('');
   const [rollNumber, setRollNumber] = useState('');
   const [email, setEmail] = useState('');
-  const [collegeName, setCollegeName] = useState('College of Engineering, Guindy (CEG), Anna University');
+  const [collegeName, setCollegeName] = useState('PSG INSTITUTE OF TECHNOLOGY AND APPLIED RESEARCH');
   const [password, setPassword] = useState('');
   const [parentName, setParentName] = useState('');
   const [parentPhone, setParentPhone] = useState('+91 ');
@@ -63,7 +60,7 @@ export const StudentAuth: React.FC<StudentAuthProps> = ({ onSuccess, onSwitchRol
   const [year, setYear] = useState<StudyYear>('3rd Year');
   const [course, setCourse] = useState('B.E. Computer Science and Engineering');
   const [gender, setGender] = useState<Gender>('Male');
-  const [hostelBlock, setHostelBlock] = useState<HostelBlock>('Thamarai Block (Men)');
+  const [hostelBlock, setHostelBlock] = useState<HostelBlock>('Boys hostel-1');
   const [roomNumber, setRoomNumber] = useState('B-304');
   const [studentPhone, setStudentPhone] = useState('+91 ');
   const [isCameraOpen, setIsCameraOpen] = useState(false);
@@ -230,7 +227,7 @@ export const StudentAuth: React.FC<StudentAuthProps> = ({ onSuccess, onSwitchRol
         </div>
         <h2 className="text-2xl font-extrabold text-white tracking-tight">Student Portal</h2>
         <p className="text-xs text-slate-400 mt-1">
-          Anna University Hostel Outing & Leave Management System
+          PSG INSTITUTE OF TECHNOLOGY AND APPLIED RESEARCH Hostel Outing & Leave Management System
         </p>
 
         {/* Tab Switcher */}
@@ -275,7 +272,7 @@ export const StudentAuth: React.FC<StudentAuthProps> = ({ onSuccess, onSwitchRol
         <form onSubmit={handleLoginSubmit} className="mt-6 space-y-4">
           <div>
             <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-              Anna University Roll Number
+              College Roll Number
             </label>
             <div className="relative">
               <User className="absolute left-3.5 top-3 w-4 h-4 text-slate-400" />
@@ -438,7 +435,7 @@ export const StudentAuth: React.FC<StudentAuthProps> = ({ onSuccess, onSwitchRol
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">Anna University Roll No *</label>
+              <label className="block text-xs font-semibold text-slate-300 mb-1">College Roll No *</label>
               <input
                 type="text"
                 required

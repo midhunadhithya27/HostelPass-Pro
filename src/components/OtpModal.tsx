@@ -91,7 +91,7 @@ export const OtpModal: React.FC<OtpModalProps> = ({ onSuccess, onCancel }) => {
             </div>
             <div>
               <h3 className="text-lg font-bold text-white tracking-tight">Two-Factor OTP Security</h3>
-              <p className="text-xs text-slate-400">Anna University Hostel Gateway</p>
+              <p className="text-xs text-slate-400">PSG iTech Hostel Gateway</p>
             </div>
           </div>
           <button 

@@ -5,18 +5,15 @@ export type Gender = 'Male' | 'Female' | 'Other';
 export type StudyYear = '1st Year' | '2nd Year' | '3rd Year' | '4th Year' | 'PG / Research';
 
 export type HostelBlock = 
-  | 'Thamarai Block (Men)' 
-  | 'Kaveri Block (Men)' 
-  | 'Vaigai Block (Men)' 
-  | 'Kurunji Block (Women)' 
-  | 'Mullai Block (Women)' 
-  | 'Malligai Block (Women)'
-  | 'PG & International Block';
+  | 'Boys hostel-1'
+  | 'Boys hostel-2'
+  | 'Boys hostel (seniors)-3'
+  | 'Girl hostel';
 
 export interface StudentProfile {
   id: string;
   name: string;
-  rollNumber: string; // Anna University Roll Number
+  rollNumber: string; // College Roll Number
   email: string; // College official email
   collegeName: string;
   password?: string;

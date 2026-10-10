@@ -1,6 +1,6 @@
 {
   "name": "HostelPass Pro - Digital Outing & Leave Approval System",
-  "description": "Multi-role hostel leave and outing approval platform for Anna University students, parents, wardens, and security guards with automated parent-to-warden authorization workflows, OTP verification, load-balanced warden queues, and QR gate passes.",
+  "description": "Multi-role hostel leave and outing approval platform for PSG INSTITUTE OF TECHNOLOGY AND APPLIED RESEARCH students, parents, wardens, and security guards with automated parent-to-warden authorization workflows, OTP verification, load-balanced warden queues, and QR gate passes.",
   "requestFramePermissions": ["camera"],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

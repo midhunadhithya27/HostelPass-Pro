@@ -85,7 +85,7 @@ export const GatePassModal: React.FC<GatePassModalProps> = ({ request, onClose }
         {/* Anti-tamper Top Banner */}
         <div className="bg-gradient-to-r from-emerald-600 via-indigo-600 to-emerald-600 py-2 px-4 text-center text-white text-[11px] font-bold tracking-widest uppercase flex items-center justify-center gap-2">
           <ShieldCheck className="w-4 h-4" />
-          <span>Official Anna University Hostel Digital Outpass</span>
+          <span>Official PSG iTech Hostel Digital Outpass</span>
           <span className="bg-white/20 px-2 py-0.5 rounded font-mono">
             {new Date().toLocaleTimeString()}
           </span>
@@ -107,9 +107,9 @@ export const GatePassModal: React.FC<GatePassModalProps> = ({ request, onClose }
               <Building2 className="w-8 h-8" />
             </div>
             <h2 className="text-base font-extrabold text-white uppercase tracking-tight">
-              Hostel Administration • CEG Guindy
+              Hostel Administration • PSG iTech
             </h2>
-            <p className="text-xs text-slate-400">Anna University, Chennai - 600 025</p>
+            <p className="text-xs text-slate-400">PSG INSTITUTE OF TECHNOLOGY AND APPLIED RESEARCH, Coimbatore</p>
             <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 bg-slate-800/80 rounded-full border border-slate-700">
               <span className="text-xs text-slate-400">Gatepass ID:</span>
               <span className="text-xs font-mono font-bold text-indigo-400">{request.passNumber}</span>

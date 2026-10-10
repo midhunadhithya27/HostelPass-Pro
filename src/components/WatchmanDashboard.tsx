@@ -565,7 +565,7 @@ export const WatchmanDashboard: React.FC<WatchmanDashboardProps> = ({ watchman }
             Gate Movement Audit Log ({gateLogs.length})
           </h3>
           <span className="text-xs text-slate-400 font-mono">
-            Anna University Security Division
+            PSG iTech Security Division
           </span>
         </div>
 

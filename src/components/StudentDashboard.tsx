@@ -410,7 +410,7 @@ export const StudentDashboard: React.FC<StudentDashboardProps> = ({ student }) =
                   <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-400">
                     Auto-Filled from Student Profile
                   </span>
-                  <span className="text-[10px] text-slate-400 font-mono">Anna University CEG</span>
+                  <span className="text-[10px] text-slate-400 font-mono">PSG iTech</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div>
