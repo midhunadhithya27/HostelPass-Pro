@@ -10,6 +10,24 @@ export type HostelBlock =
   | 'Boys hostel (seniors)-3'
   | 'Girl hostel';
 
+export const COURSE_OPTIONS = [
+  'B.E Civil Engineering',
+  'B.E Computer Science and Engineering',
+  'B.E Electrical and Electronics Engineering',
+  'B.E Electronics and Communication Engineering',
+  'B.E Instrumentation and Control Engineering',
+  'B.E Mechanical Engineering',
+  'B.E Robotics and Artificial Intelligence',
+  'B.Tech Artificial Intelligence and Data Science',
+  'B.Tech Electronics Engineering (VLSI Design and Technology)',
+  'B.Des Bachelor of Design',
+  'M.E Computer Science and Engineering',
+  'M.E Structural Engineering',
+  'M.E Engineering Design'
+] as const;
+
+export type Course = typeof COURSE_OPTIONS[number];
+
 export interface StudentProfile {
   id: string;
   name: string;

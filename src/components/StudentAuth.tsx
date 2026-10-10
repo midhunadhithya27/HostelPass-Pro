@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { hostelStore } from '../services/store';
-import { StudyYear, Gender, HostelBlock, StudentProfile } from '../types';
+import { StudyYear, Gender, HostelBlock, StudentProfile, COURSE_OPTIONS } from '../types';
 import { 
   User, 
   Mail, 
@@ -58,7 +58,7 @@ export const StudentAuth: React.FC<StudentAuthProps> = ({ onSuccess, onSwitchRol
   const [profilePic, setProfilePic] = useState('https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=400&q=80');
   const [dob, setDob] = useState('2004-05-12');
   const [year, setYear] = useState<StudyYear>('3rd Year');
-  const [course, setCourse] = useState('B.E. Computer Science and Engineering');
+  const [course, setCourse] = useState('');
   const [gender, setGender] = useState<Gender>('Male');
   const [hostelBlock, setHostelBlock] = useState<HostelBlock>('Boys hostel-1');
   const [roomNumber, setRoomNumber] = useState('B-304');
@@ -185,8 +185,8 @@ export const StudentAuth: React.FC<StudentAuthProps> = ({ onSuccess, onSwitchRol
     e.preventDefault();
     setError('');
 
-    if (!name || !rollNumber || !email || !password || !parentName || !parentPhone || !parentEmail || !roomNumber) {
-      setError('Please fill in all mandatory registration fields.');
+    if (!name || !rollNumber || !email || !password || !parentName || !parentPhone || !parentEmail || !roomNumber || !course) {
+      setError('Please fill in all mandatory registration fields (including selecting your course).');
       return;
     }
 
@@ -484,14 +484,17 @@ export const StudentAuth: React.FC<StudentAuthProps> = ({ onSuccess, onSwitchRol
             {/* Academic details */}
             <div>
               <label className="block text-xs font-semibold text-slate-300 mb-1">Course Pursued *</label>
-              <input
-                type="text"
+              <select
                 required
                 value={course}
                 onChange={(e) => setCourse(e.target.value)}
-                placeholder="e.g. B.E. Computer Science"
                 className="w-full px-3.5 py-2 bg-slate-950 border border-slate-700 rounded-xl text-white text-xs focus:border-indigo-500 outline-none"
-              />
+              >
+                <option value="" disabled>Select Course Pursued</option>
+                {COURSE_OPTIONS.map(c => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
             </div>
 
             <div>
