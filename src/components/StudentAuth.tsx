@@ -16,7 +16,9 @@ import {
   AlertCircle, 
   CheckCircle2, 
   ArrowRight,
-  ShieldCheck
+  ShieldCheck,
+  X,
+  Video
 } from 'lucide-react';
 import { soundService } from '../services/soundService';
 
@@ -64,8 +66,11 @@ export const StudentAuth: React.FC<StudentAuthProps> = ({ onSuccess, onSwitchRol
   const [hostelBlock, setHostelBlock] = useState<HostelBlock>('Thamarai Block (Men)');
   const [roomNumber, setRoomNumber] = useState('B-304');
   const [studentPhone, setStudentPhone] = useState('+91 ');
+  const [isCameraOpen, setIsCameraOpen] = useState(false);
+  const cameraVideoRef = React.useRef<HTMLVideoElement | null>(null);
+  const cameraStreamRef = React.useRef<MediaStream | null>(null);
 
-  // Handle Photo Upload
+  // Handle Photo Upload via file
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -75,6 +80,52 @@ export const StudentAuth: React.FC<StudentAuthProps> = ({ onSuccess, onSwitchRol
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  // Open camera for live student photo capture
+  const openCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 640 } },
+        audio: false
+      });
+      cameraStreamRef.current = stream;
+      setIsCameraOpen(true);
+      setTimeout(() => {
+        if (cameraVideoRef.current) {
+          cameraVideoRef.current.srcObject = stream;
+          cameraVideoRef.current.play().catch(() => {});
+        }
+      }, 100);
+    } catch (err: any) {
+      setError(`Cannot access camera: ${err.message || 'Permission denied'}. Please use upload.`);
+      soundService.playWarningChime();
+    }
+  };
+
+  const closeCamera = () => {
+    if (cameraStreamRef.current) {
+      cameraStreamRef.current.getTracks().forEach(t => t.stop());
+      cameraStreamRef.current = null;
+    }
+    setIsCameraOpen(false);
+  };
+
+  const takeSnapshot = () => {
+    if (cameraVideoRef.current) {
+      const video = cameraVideoRef.current;
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth || 400;
+      canvas.height = video.videoHeight || 400;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+        setProfilePic(dataUrl);
+        soundService.playNotificationPing();
+      }
+    }
+    closeCamera();
   };
 
   // Student Login with OTP dispatch to Parent's Phone
@@ -297,7 +348,7 @@ export const StudentAuth: React.FC<StudentAuthProps> = ({ onSuccess, onSwitchRol
       ) : (
         /* REGISTRATION FORM */
         <form onSubmit={handleRegisterSubmit} className="mt-6 space-y-4">
-          {/* Profile Picture Upload */}
+          {/* Profile Picture Upload & Camera Capture */}
           <div className="p-4 bg-slate-950/60 rounded-2xl border border-slate-800 flex items-center gap-4">
             <div className="relative group">
               <img
@@ -305,21 +356,82 @@ export const StudentAuth: React.FC<StudentAuthProps> = ({ onSuccess, onSwitchRol
                 alt="Profile Preview"
                 className="w-18 h-18 rounded-2xl object-cover border-2 border-indigo-500 shadow-md"
               />
-              <label className="absolute inset-0 bg-black/60 rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity">
+              <button 
+                type="button"
+                onClick={openCamera}
+                className="absolute inset-0 bg-black/60 rounded-2xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                title="Take live photo with camera"
+              >
                 <Camera className="w-6 h-6 text-white" />
-                <input type="file" accept="image/*" onChange={handlePhotoUpload} className="hidden" />
-              </label>
+              </button>
             </div>
             <div className="flex-1">
               <h4 className="text-xs font-bold text-white uppercase tracking-wider">Student Profile Photo</h4>
               <p className="text-[11px] text-slate-400 mt-0.5">Used for digital gatepass verification by security watchmen.</p>
-              <label className="mt-2 inline-flex items-center gap-1.5 px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded-lg cursor-pointer transition-colors border border-slate-700">
-                <Upload className="w-3.5 h-3.5" />
-                Upload Photo
-                <input type="file" accept="image/*" onChange={handlePhotoUpload} className="hidden" />
-              </label>
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={openCamera}
+                  className="px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-medium rounded-lg flex items-center gap-1.5 shadow-sm transition-colors"
+                >
+                  <Camera className="w-3.5 h-3.5" />
+                  Take Photo with Camera
+                </button>
+                <label className="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded-lg cursor-pointer transition-colors border border-slate-700 flex items-center gap-1.5">
+                  <Upload className="w-3.5 h-3.5" />
+                  Upload File
+                  <input type="file" accept="image/*" onChange={handlePhotoUpload} className="hidden" />
+                </label>
+              </div>
             </div>
           </div>
+
+          {/* Live Camera Snapshot Modal */}
+          {isCameraOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md animate-in fade-in duration-200">
+              <div className="relative w-full max-w-sm bg-slate-900 border border-slate-700 rounded-3xl p-5 shadow-2xl space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                  <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                    <Camera className="w-4 h-4 text-indigo-400" />
+                    Take Student Profile Photo
+                  </h4>
+                  <button onClick={closeCamera} className="text-slate-400 hover:text-white">
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+
+                <div className="relative w-full aspect-square bg-black rounded-2xl overflow-hidden border-2 border-indigo-500 shadow-inner">
+                  <video 
+                    ref={cameraVideoRef} 
+                    autoPlay 
+                    playsInline 
+                    muted 
+                    className="w-full h-full object-cover" 
+                  />
+                  {/* Face oval guide */}
+                  <div className="absolute inset-6 border-2 border-dashed border-indigo-400/70 rounded-full pointer-events-none" />
+                </div>
+
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={closeCamera}
+                    className="flex-1 py-2 rounded-xl border border-slate-700 text-xs text-slate-300 hover:bg-slate-800"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={takeSnapshot}
+                    className="flex-1 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-xs font-bold text-white shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-1.5"
+                  >
+                    <Camera className="w-3.5 h-3.5" />
+                    Capture Photo
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
             <div>
